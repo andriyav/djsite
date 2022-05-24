@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render
 from .models import *
 
@@ -11,10 +11,13 @@ menu = [{'title': "О сайте", 'url_name': 'about'},
 
 def index(request):
     posts = Women.objects.all()
+    cats = Category.objects.all()
     contexst = {
         'posts': posts,
         'menu': menu,
-        'title': 'Головна сторінка'
+        'title': 'Головна сторінка',
+        'cats' : cats,
+        'cat_selected': 0
     }
 
     return render(request, 'women/index.html', contexst)
@@ -31,12 +34,25 @@ def contact(request):
 def login(request):
     return render(request, 'women/about.html')
 
-
-def show_post(request, post_id):
-    return HttpResponse(f'page number {post_id}')
-
-def categories(request, cat):
-    return HttpResponse(f"<h1> Category  {cat} </h1>")
-
 def pageNotFound(request, exeption):
     return HttpResponseNotFound('h1>Стор    інка не зайдена</h1>')
+
+def show_post(request, cat_id):
+
+    return HttpResponse(f'page number {cat_id}')
+
+def show_category(request, cat_id):
+    posts = Women.objects.filter(cat_id=cat_id)
+    cats = Category.objects.all()
+    if len(posts) == 0:
+        raise Http404()
+    contexst = {
+        'posts': posts,
+        'menu': menu,
+        'title': 'Головна сторінка',
+        'cats': cats,
+        'cat_selected': cat_id
+    }
+
+    return render(request, 'women/index.html', contexst)
+
