@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from .forms import AddPostForm
 from .models import *
@@ -29,17 +29,19 @@ def show_category(request, cat_id):
     return render(request, 'women/index.html', contexst)
 
 
-def add_page(request):
-
+def addpage(request):
     if request.method == 'POST':
         form = AddPostForm(request.POST)
         if form.is_valid():
             print(form.cleaned_data)
-        else:
-            form = AddPostForm()
-
-
-    return render(request, 'women/addpage.html', {'form': form, 'title': 'Добавити статтью'})
+            try:
+                Women.objects.create(**form.cleaned_data)
+                return redirect('home')
+            except:
+                form.add_error(None, 'Ошибка добавления поста')
+    else:
+        form = AddPostForm()
+    return render(request, 'women/addpage.html', {'form': form, 'title': 'Добавление статьи'})
 
 
 def about(request):
