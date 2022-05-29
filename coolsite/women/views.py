@@ -31,17 +31,18 @@ def show_category(request, cat_id):
 
 def addpage(request):
     if request.method == 'POST':
-        form = AddPostForm(request.POST)
+        form = AddPostForm(request.POST, request.FILES)
         if form.is_valid():
-            print(form.cleaned_data)
-            try:
-                Women.objects.create(**form.cleaned_data)
-                return redirect('home')
-            except:
-                form.add_error(None, 'Ошибка добавления поста')
+            form.save()
+            return redirect('home')
+
     else:
         form = AddPostForm()
     return render(request, 'women/addpage.html', {'form': form, 'title': 'Добавление статьи'})
+
+
+def show_post(request, cat_id):
+    return HttpResponse(f'page number {cat_id}')
 
 
 def about(request):
@@ -60,5 +61,4 @@ def pageNotFound(request, exeption):
     return HttpResponseNotFound('h1>Стор    інка не зайдена</h1>')
 
 
-def show_post(request, cat_id):
-    return HttpResponse(f'page number {cat_id}')
+
