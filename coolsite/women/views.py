@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
 from .forms import AddPostForm
 from .models import *
@@ -73,6 +73,17 @@ def addpage(request):
     else:
         form = AddPostForm()
     return render(request, 'women/addpage.html', {'form': form, 'title': 'Добавление статьи'})
+
+class ShowPost(DetailView):
+    model = Women
+    template_name = 'women/post.html'
+    slug_url_kwarg = 'post_slug'
+    context_object_name = 'post'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = context['post']
+        return context
 
 
 def show_post(request, cat_id):
