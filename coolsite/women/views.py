@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 
 from .forms import AddPostForm
 from .models import *
@@ -50,8 +50,16 @@ class WomenCategory(ListView):
         context['cat_selected'] = context['posts'][0].cat_id
         return context
 
-# def show_category(request, cat_id):
-#     posts = Women.objects.filter(cat_id=cat_id)
+class AddPage(CreateView):
+    form_class = AddPostForm
+    template_name = 'women/addpage.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Добавлення статті'
+        return context
+
+
 #     if len(posts) == 0:
 #         raise Http404()
 #     contexst = {
@@ -63,16 +71,16 @@ class WomenCategory(ListView):
 #     return render(request, 'women/index.html', contexst)
 
 
-def addpage(request):
-    if request.method == 'POST':
-        form = AddPostForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-
-    else:
-        form = AddPostForm()
-    return render(request, 'women/addpage.html', {'form': form, 'title': 'Добавление статьи'})
+# def addpage(request):
+#     if request.method == 'POST':
+#         form = AddPostForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('home')
+#
+#     else:
+#         form = AddPostForm()
+#     return render(request, 'women/addpage.html', {'form': form, 'title': 'Добавление статьи'})
 
 class ShowPost(DetailView):
     model = Women
