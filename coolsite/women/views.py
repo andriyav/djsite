@@ -94,8 +94,8 @@ class ShowPost(DetailView):
         return context
 
 
-def show_post(request, cat_id):
-    return HttpResponse(f'page number {cat_id}')
+# def show_post(request, cat_id):
+#     return HttpResponse(f'page number {cat_id}')
 
 
 def about(request):
