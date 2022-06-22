@@ -22,6 +22,7 @@ from .utils import *
 #
 #     return render(request, 'women/index.html', contexst)
 class WomenHome(DataMixin, ListView):
+    paginate_by = 3
     model = Women
     template_name = 'women/index.html'
     context_object_name = 'posts'
