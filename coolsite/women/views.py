@@ -1,3 +1,4 @@
+from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -38,6 +39,7 @@ class WomenHome(DataMixin, ListView):
         return Women.objects.filter(is_published=True)
 
 class WomenCategory(DataMixin, ListView):
+    paginate_by = 3
     model = Women
     template_name = 'women/index.html'
     context_object_name = 'posts'
@@ -97,6 +99,17 @@ class ShowPost(DataMixin, DetailView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title=context['post'])
         return dict(list(context.items()) + list(c_def.items()))
+
+class RegisterUser(DataMixin, CreateView):
+    form_class = UserCreationForm
+    template_name = 'women/register.html'
+    success_url = reverse_lazy('register')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Регистрація")
+        return dict(list(context.items()) + list(c_def.items()))
+
 
 
 
