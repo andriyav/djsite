@@ -103,7 +103,7 @@ class ShowPost(DataMixin, DetailView):
 class RegisterUser(DataMixin, CreateView):
     form_class = UserCreationForm
     template_name = 'women/register.html'
-    success_url = reverse_lazy('register')
+    success_url = reverse_lazy('login')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
