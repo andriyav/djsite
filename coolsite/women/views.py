@@ -1,10 +1,11 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import LoginView
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .forms import AddPostForm
+from .forms import AddPostForm, RegisterUserForm, LoginUserForm
 from .models import *
 from .utils import *
 # menu = [{'title': "О сайте", 'url_name': 'about'},
@@ -101,14 +102,28 @@ class ShowPost(DataMixin, DetailView):
         return dict(list(context.items()) + list(c_def.items()))
 
 class RegisterUser(DataMixin, CreateView):
-    form_class = UserCreationForm
+    form_class = RegisterUserForm
     template_name = 'women/register.html'
     success_url = reverse_lazy('login')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title="Регистрація")
+        c_def = self.get_user_context(title="Регістрация")
         return dict(list(context.items()) + list(c_def.items()))
+
+
+
+class LoginUser(DataMixin, LoginView):
+     forms_class = LoginUserForm
+     template_name = 'women/login.html'
+
+     def get_context_data(self, *, object_list=None, **kwargs):
+         context = super().get_context_data(**kwargs)
+         c_def = self.get_user_context(title="Авторизація")
+         return dict(list(context.items()) + list(c_def.items()))
+
+     # def get_success_url(self):
+     #     return reverse_lazy('home')
 
 
 
@@ -120,10 +135,6 @@ def about(request):
 
 
 def contact(request):
-    return render(request, 'women/about.html')
-
-
-def login(request):
     return render(request, 'women/about.html')
 
 
